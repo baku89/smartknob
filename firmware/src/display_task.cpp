@@ -53,8 +53,8 @@ void DisplayTask::run() {
     PB_SmartKnobState state;
 
     const int RADIUS = TFT_WIDTH / 2;
-    const uint16_t FILL_COLOR = spr_.color565(90, 18, 151);
-    const uint16_t DOT_COLOR = spr_.color565(80, 100, 200);
+    const uint16_t FILL_COLOR = spr_.color565(80, 80, 80);
+    const uint16_t DOT_COLOR = spr_.color565(255, 255, 255);
 
     spr_.setTextDatum(CC_DATUM);
     spr_.setTextColor(TFT_WHITE);

@@ -460,7 +460,8 @@ void InterfaceTask::updateHardware() {
 
     #if SK_LEDS
         for (uint8_t i = 0; i < NUM_LEDS; i++) {
-            leds[i].setHSV(latest_config_.led_hue, 255 - 180*CLAMP(press_value_unit, (float)0, (float)1) - 75*pressed, brightness >> 8);
+            // leds[i].setHSV(latest_config_.led_hue, 255 - 180*CLAMP(press_value_unit, (float)0, (float)1) - 75*pressed, brightness >> 8);
+            leds[i].setHSV(0, 0, press_value_unit * 255);
 
             // Gamma adjustment
             leds[i].r = dim8_video(leds[i].r);
