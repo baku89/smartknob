@@ -14,7 +14,7 @@ sudo add-apt-repository --yes ppa:kicad/kicad-7.0-releases
 sudo apt-get update -qq
 sudo DEBIAN_FRONTEND=noninteractive apt install -y kicad kicad-packages3d inkscape poppler-utils xdotool recordmydesktop python3-dev python3-pip xvfb
 
-sudo python3 -m pip install psutil kikit==1.1.1 xvfbwrapper
+sudo python3 -m pip install psutil kikit==1.4.0 xvfbwrapper
 
 mkdir -p ~/.config/kicad
 cp /usr/share/kicad/template/fp-lib-table ~/.config/kicad/
