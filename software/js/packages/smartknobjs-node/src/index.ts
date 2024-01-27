@@ -15,7 +15,7 @@ export class SmartKnobNode extends SmartKnobCore {
         this.port = new SerialPort(serialPath, {
             baudRate: this.baudRate,
         })
-        this.port.on('data', (data) => {
+        this.port.on('data', (data: any) => {
             this.onReceivedData(data)
         })
         this.portAvailable = true
