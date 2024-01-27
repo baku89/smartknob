@@ -6376,7 +6376,7 @@
   (gr_text "-" (at 64.5 121) (layer "B.SilkS") (tstamp a7035c1b-863b-4bbf-a32a-6ebba2814e2c)
     (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
   )
-  (gr_text "Base PCB\nbaku89mod_230127" (at 133.604 66.548) (layer "F.SilkS") (tstamp 00000000-0000-0000-0000-000062085a50)
+  (gr_text "Base PCB ${RELEASE_VERSION}" (at 133.604 66.04) (layer "F.SilkS") (tstamp 00000000-0000-0000-0000-000062085a50)
     (effects (font (size 1 1) (thickness 0.12)) (justify right))
   )
   (gr_text "SmartKnob View" (at 133.858 63.5) (layer "F.SilkS") (tstamp 986fa662-6dc8-4009-9871-995c9cfdbebc)
