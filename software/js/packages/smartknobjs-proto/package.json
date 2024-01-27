@@ -5,7 +5,8 @@
   "main": "dist/smartknob_proto.js",
   "types": "dist/smartknob_proto.d.ts",
   "scripts": {
-    "build": "mkdir -p dist && pbjs --target static-module --out dist/smartknob_proto.js ../../../../proto/*.proto && pbts -o dist/smartknob_proto.d.ts dist/smartknob_proto.js"
+    "build": "mkdir -p dist && pbjs --target static-module --out dist/smartknob_proto.js ../../../../proto/*.proto && pbts -o dist/smartknob_proto.d.ts dist/smartknob_proto.js",
+		"prepare": "npm run build"
   },
   "author": "",
   "license": "Apache-2.0",
