@@ -13,12 +13,11 @@
     "author": "",
     "license": "Apache-2.0",
     "dependencies": {
-        "serialport": "^9.2.4",
+        "serialport": "^12.0.0",
         "smartknobjs-proto": "^1.0.0",
         "smartknobjs-webserial": "^1.0.0"
     },
     "devDependencies": {
-        "@types/serialport": "^8.0.2",
         "@typescript-eslint/eslint-plugin": "^5.40.1",
         "@typescript-eslint/parser": "^5.40.1",
         "eslint": "^8.25.0",

@@ -13,7 +13,7 @@
     "author": "",
     "license": "Apache-2.0",
     "dependencies": {
-        "serialport": "^9.2.4",
+        "serialport": "^12.0.0",
         "smartknobjs-core": "^1.0.0",
         "smartknobjs-proto": "^1.0.0"
     },
