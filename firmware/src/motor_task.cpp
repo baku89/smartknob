@@ -194,7 +194,7 @@ void MotorTask::run() {
                 }
                 case CommandType::HAPTIC: {
                     // Play a hardcoded haptic "click"
-                    float strength = command.data.haptic.press ? 5 : 1.5;
+                    float strength = command.data.haptic.press ? HAPTIC_STRENGTH_PRESS : HAPTIC_STRENGTH_RELEASE;
                     motor.move(strength);
                     for (uint8_t i = 0; i < 3; i++) {
                         motor.loopFOC();
@@ -281,7 +281,7 @@ void MotorTask::run() {
             #if SK_INVERT_ROTATION
                 torque = -torque;
             #endif
-            motor.move(torque);
+            motor.move(torque * TORQUE_MULTIPLIER);
         }
 
         // Publish current status to other registered tasks periodically
