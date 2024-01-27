@@ -15,9 +15,12 @@ type QueueEntry = {
 
 export {cobsEncode, cobsDecode}
 
+export interface SmartKnobCoreOptions {
+    baudRate?: number
+}
+
 export class SmartKnobCore {
     private static readonly RETRY_MILLIS = 250
-    public static readonly BAUD = 921600
     public static readonly USB_DEVICE_FILTERS = [
         // CH340
         {
@@ -33,6 +36,7 @@ export class SmartKnobCore {
 
     private onMessage: MessageCallback
     private sendBytes: SendBytes
+    protected readonly baudRate: number
 
     private readonly outgoingQueue: QueueEntry[] = []
 
@@ -42,10 +46,11 @@ export class SmartKnobCore {
 
     private buffer = new Uint8Array()
 
-    constructor(onMessage: MessageCallback, sendBytes: SendBytes) {
+    constructor(onMessage: MessageCallback, sendBytes: SendBytes, {baudRate = 921600}: SmartKnobCoreOptions = {}) {
         this.lastNonce = Math.floor(Math.random() * (2 ^ (32 - 1)))
         this.onMessage = onMessage
         this.sendBytes = sendBytes
+        this.baudRate = baudRate
     }
 
     public sendConfig(config: PB.SmartKnobConfig): void {

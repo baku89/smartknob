@@ -1,13 +1,17 @@
-import {MessageCallback, SmartKnobCore} from 'smartknobjs-core'
+import {MessageCallback, SmartKnobCore, SmartKnobCoreOptions} from 'smartknobjs-core'
 
 export class SmartKnobWebSerial extends SmartKnobCore {
     private port: SerialPort | null
     private writer: WritableStreamDefaultWriter<Uint8Array> | undefined = undefined
 
-    constructor(port: SerialPort, onMessage: MessageCallback) {
-        super(onMessage, (packet: Uint8Array) => {
-            this.writer?.write(packet).catch(this.onError)
-        })
+    constructor(port: SerialPort, onMessage: MessageCallback, options?: SmartKnobCoreOptions) {
+        super(
+            onMessage,
+            (packet: Uint8Array) => {
+                this.writer?.write(packet).catch(this.onError)
+            },
+            options,
+        )
         this.port = port
         this.portAvailable = true
         this.port.addEventListener('disconnect', () => {
@@ -21,7 +25,7 @@ export class SmartKnobWebSerial extends SmartKnobCore {
         if (this.port === null) {
             return
         }
-        await this.port.open({baudRate: SmartKnobCore.BAUD})
+        await this.port.open({baudRate: this.baudRate})
         if (this.port.readable === null || this.port.writable === null) {
             throw new Error('Port missing readable or writable!')
         }
