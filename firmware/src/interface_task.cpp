@@ -41,6 +41,8 @@ static PB_SmartKnobConfig configs[] = {
     // int32_t detent_positions[5];
     // float snap_point_bias;
     // int8_t led_hue;
+    // float position_offset_radians;
+    // char position_text[10];
 
     {
         0,
@@ -57,6 +59,8 @@ static PB_SmartKnobConfig configs[] = {
         {},
         0,
         200,
+        0,
+        ""
     },
     {
         0,
@@ -73,6 +77,8 @@ static PB_SmartKnobConfig configs[] = {
         {},
         0,
         0,
+        0,
+        ""
     },
     {
         0,
@@ -89,6 +95,8 @@ static PB_SmartKnobConfig configs[] = {
         {},
         0,
         73,
+        0,
+        ""
     },
     {
         0,
@@ -105,6 +113,8 @@ static PB_SmartKnobConfig configs[] = {
         {},
         0,
         157,
+        0,
+        ""
     },
     {
         0,
@@ -121,6 +131,8 @@ static PB_SmartKnobConfig configs[] = {
         {},
         0,
         45,
+        0,
+        ""
     },
     {
         127,
@@ -137,6 +149,8 @@ static PB_SmartKnobConfig configs[] = {
         {},
         0,
         219,
+        0,
+        ""
     },
     {
         127,
@@ -153,6 +167,8 @@ static PB_SmartKnobConfig configs[] = {
         {},
         0,
         25,
+        0,
+        ""
     },
     {
         0,
@@ -169,6 +185,8 @@ static PB_SmartKnobConfig configs[] = {
         {},
         0,
         200,
+        0,
+        ""
     },
     {
         0,
@@ -185,6 +203,8 @@ static PB_SmartKnobConfig configs[] = {
         {},
         0,
         0,
+        0,
+        ""
     },
     {
         0,
@@ -201,6 +221,8 @@ static PB_SmartKnobConfig configs[] = {
         {2, 10, 21, 22},
         0,
         73,
+        0,
+        ""
     },
     {
         0,
@@ -217,6 +239,8 @@ static PB_SmartKnobConfig configs[] = {
         {},
         0.4,
         157,
+        0,
+        ""
     },
 };
 
