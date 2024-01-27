@@ -77,7 +77,7 @@ export const App: React.FC<AppProps> = () => {
                     } else if (message.payload === 'log' && message.log !== null) {
                         console.log('LOG from smartknob', message.log?.msg)
                     }
-                })
+                }, {baudRate: 115200})
                 setSmartKnob(smartKnob)
                 const loop = smartKnob.openAndLoop()
                 console.log('FIXME')
