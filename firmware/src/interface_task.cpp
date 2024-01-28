@@ -495,14 +495,23 @@ void InterfaceTask::updateHardware() {
     #endif
 
     #if SK_LEDS
-        for (uint8_t i = 0; i < NUM_LEDS; i++) {
-            // leds[i].setHSV(latest_config_.led_hue, 255 - 180*CLAMP(press_value_unit, (float)0, (float)1) - 75*pressed, brightness >> 8);
-            leds[i].setHSV(0, 0, press_value_unit * 255);
 
-            // Gamma adjustment
-            leds[i].r = dim8_video(leds[i].r);
-            leds[i].g = dim8_video(leds[i].g);
-            leds[i].b = dim8_video(leds[i].b);
+        float press_multiplier = lerp(press_value_unit, 0, 1, .5, 1);
+        float brightness_multiplier = float(brightness) / 65535;
+        float multiplier = press_multiplier * brightness_multiplier;
+
+        // Extract the 8bit value for each RGB channel and scale them
+        uint8_t r = (0xff & (latest_config_.base_color >> 16)) * multiplier;
+        uint8_t g = (0xff & (latest_config_.base_color >>  8)) * multiplier;
+        uint8_t b = (0xff & (latest_config_.base_color >>  0)) * multiplier;
+        
+        // Gamma adjustment
+        r = dim8_video(r);
+        g = dim8_video(g);
+        b = dim8_video(b);
+
+        for (uint8_t i = 0; i < NUM_LEDS; i++) {
+            leds[i].setRGB(r, g, b);
         }
         FastLED.show();
     #endif
