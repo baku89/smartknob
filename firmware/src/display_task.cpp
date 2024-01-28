@@ -154,6 +154,7 @@ void DisplayTask::run() {
             fillFan(spr_, TFT_WIDTH / 2, TFT_HEIGHT / 2, RADIUS * 2, origin_angle, raw_angle, radians(30), FILL_COLOR);
           }
 
+          // Draws a position text
           spr_.setFreeFont(&Roboto_Light_60);
 
           if (state.config.position_text[0] == '\0') {
@@ -166,6 +167,7 @@ void DisplayTask::run() {
             spr_.drawString(buf, TFT_WIDTH / 2, TFT_HEIGHT / 2 - VALUE_OFFSET, 1);
           }
 
+          // Draws a description text
           spr_.setFreeFont(&DESCRIPTION_FONT);
           int32_t line_y = TFT_HEIGHT / 2 + DESCRIPTION_Y_OFFSET;
           char* start = state.config.text;
@@ -183,6 +185,7 @@ void DisplayTask::run() {
             line_y += spr_.fontHeight(1);
           }
 
+          // Draws endpoints
           if (num_positions > 0) {
             spr_.drawLine(TFT_WIDTH/2 + RADIUS * cosf(left_bound), TFT_HEIGHT/2 - RADIUS * sinf(left_bound), TFT_WIDTH/2 + (RADIUS - 10) * cosf(left_bound), TFT_HEIGHT/2 - (RADIUS - 10) * sinf(left_bound), TFT_WHITE);
             spr_.drawLine(TFT_WIDTH/2 + RADIUS * cosf(right_bound), TFT_HEIGHT/2 - RADIUS * sinf(right_bound), TFT_WIDTH/2 + (RADIUS - 10) * cosf(right_bound), TFT_HEIGHT/2 - (RADIUS - 10) * sinf(right_bound), TFT_WHITE);
