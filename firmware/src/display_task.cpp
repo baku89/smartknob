@@ -123,9 +123,35 @@ void DisplayTask::run() {
         bool sk_demo_mode = strncmp(state.config.text, "SKDEMO_", 7) == 0;
 
         if (!sk_demo_mode) {
-          if (num_positions > 1) {
-            int32_t height = (state.current_position - state.config.min_position) * TFT_HEIGHT / (state.config.max_position - state.config.min_position);
-            spr_.fillRect(0, TFT_HEIGHT - height, TFT_WIDTH, height, FILL_COLOR);
+          // Draws the meter on the background
+          bool has_range = num_positions > 1;
+
+          float t = float(state.current_position - state.config.min_position) / (state.config.max_position - state.config.min_position);
+
+          if (has_range) {
+            if (state.config.meter_type == PB_MeterType_VERTICAL) {
+              spr_.fillRect(0, TFT_HEIGHT * (1 - t), TFT_WIDTH, TFT_HEIGHT * t, FILL_COLOR);
+            } else if (state.config.meter_type == PB_MeterType_HORIZONTAL) {
+              spr_.fillRect(0, 0, TFT_WIDTH * t, TFT_HEIGHT, FILL_COLOR);
+            } else if (state.config.meter_type == PB_MeterType_CIRCULAR) {
+              int32_t cx = TFT_WIDTH / 2;
+              int32_t cy = TFT_HEIGHT / 2;
+              spr_.fillCircle(cx, cy, RADIUS * t, FILL_COLOR);
+            }
+          }
+
+          if (state.config.meter_type == PB_MeterType_RADIAL) {
+            float origin_angle = has_range ? left_bound : PI / 2;
+
+            while (abs(raw_angle - origin_angle) > PI * 2) {
+              if (origin_angle < raw_angle) {
+                origin_angle += 2 * PI;
+              } else {
+                origin_angle -= 2 * PI;
+              }
+            }
+
+            fillFan(spr_, TFT_WIDTH / 2, TFT_HEIGHT / 2, RADIUS * 2, origin_angle, raw_angle, radians(30), FILL_COLOR);
           }
 
           spr_.setFreeFont(&Roboto_Light_60);
