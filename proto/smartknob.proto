@@ -215,10 +215,12 @@ message SmartKnobConfig {
     float position_offset_radians = 14;
 
     /**
-     * 10-byte string for displaying the current position with arbitrary format.
-     * It supports sprintf-style formatting. When this is left empty, the value will be displayed as it is.
+     * 20-byte string overriding the current position text.
+     * If this is left empty, the number of position will be displayed as it is.
+     * This field can be useful to customize the textural representation of current position,
+     * like appending unit, float values, or formatting with SMPTE timecode.
      */
-    string position_text = 15 [(nanopb).max_length = 10];
+    string position_text = 15 [(nanopb).max_length = 20];
 
     /**
      * The type of meter display on the background of LCD.

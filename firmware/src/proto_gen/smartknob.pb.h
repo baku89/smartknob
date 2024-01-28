@@ -131,9 +131,11 @@ typedef struct _PB_SmartKnobConfig {
  If a negative value is specified, the endpoints will be symmetrically placed around the top of the display. */
     float position_offset_radians;
     /* *
- 10-byte string for displaying the current position with arbitrary format.
- It supports sprintf-style formatting. When this is left empty, the value will be displayed as it is. */
-    char position_text[11];
+ 20-byte string overriding the current position text.
+ If this is left empty, the number of position will be displayed as it is.
+ This field can be useful to customize the textural representation of current position,
+ like appending unit, float values, or formatting with SMPTE timecode. */
+    char position_text[21];
     /* *
  The type of meter display on the background of LCD. */
     PB_MeterType meter_type;
@@ -424,10 +426,10 @@ extern const pb_msgdesc_t PB_StrainCalibration_msg;
 #define PB_MotorCalibration_size                 15
 #define PB_PersistentConfiguration_size          47
 #define PB_RequestState_size                     0
-#define PB_SmartKnobConfig_size                  199
-#define PB_SmartKnobState_size                   221
+#define PB_SmartKnobConfig_size                  209
+#define PB_SmartKnobState_size                   231
 #define PB_StrainCalibration_size                22
-#define PB_ToSmartknob_size                      211
+#define PB_ToSmartknob_size                      221
 
 #ifdef __cplusplus
 } /* extern "C" */
