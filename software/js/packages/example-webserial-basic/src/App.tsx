@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import {PB} from 'smartknobjs-proto'
-import {Box, Button, CardActions, Paper, TextField} from '@mui/material'
+import {Box, Button, CardActions, Paper, TextField, FormLabel, FormControlLabel, RadioGroup, Radio} from '@mui/material'
 import {NoUndefinedField} from './util'
 import {SmartKnobWebSerial} from 'smartknobjs-webserial'
 
@@ -22,6 +22,9 @@ const defaultConfig: Config = {
     detentPositions: [],
     snapPointBias: 0,
     ledHue: 0,
+    positionOffsetRadians: -1,
+    positionText: '',
+    meterType: PB.MeterType.RADIAL,
 }
 
 export type AppProps = object
@@ -67,17 +70,21 @@ export const App: React.FC<AppProps> = () => {
                 serialPort.addEventListener('disconnect', () => {
                     setSmartKnob(null)
                 })
-                const smartKnob = new SmartKnobWebSerial(serialPort, (message) => {
-                    if (message.payload === 'smartknobState' && message.smartknobState !== null) {
-                        const state = PB.SmartKnobState.create(message.smartknobState)
-                        const stateObj = PB.SmartKnobState.toObject(state, {
-                            defaults: true,
-                        }) as NoUndefinedField<PB.ISmartKnobState>
-                        setSmartKnobState(stateObj)
-                    } else if (message.payload === 'log' && message.log !== null) {
-                        console.log('LOG from smartknob', message.log?.msg)
-                    }
-                }, {baudRate: 115200})
+                const smartKnob = new SmartKnobWebSerial(
+                    serialPort,
+                    (message) => {
+                        if (message.payload === 'smartknobState' && message.smartknobState !== null) {
+                            const state = PB.SmartKnobState.create(message.smartknobState)
+                            const stateObj = PB.SmartKnobState.toObject(state, {
+                                defaults: true,
+                            }) as NoUndefinedField<PB.ISmartKnobState>
+                            setSmartKnobState(stateObj)
+                        } else if (message.payload === 'log' && message.log !== null) {
+                            console.log('LOG from smartknob', message.log?.msg)
+                        }
+                    },
+                    {baudRate: 115200},
+                )
                 setSmartKnob(smartKnob)
                 const loop = smartKnob.openAndLoop()
                 console.log('FIXME')
@@ -127,6 +134,9 @@ export const App: React.FC<AppProps> = () => {
                                         detentPositions: [],
                                         snapPointBias: parseFloat(pendingSmartKnobConfig.snapPointBias) || 0,
                                         ledHue: 0,
+                                        positionOffsetRadians: parseFloat(pendingSmartKnobConfig.positionOffsetRadians),
+                                        positionText: pendingSmartKnobConfig.positionText,
+                                        meterType: parseInt(pendingSmartKnobConfig.meterType) as PB.MeterType,
                                     })
                                 }}
                             >
@@ -278,6 +288,66 @@ export const App: React.FC<AppProps> = () => {
                                         })
                                     }}
                                 />
+                                <br />
+                                <TextField
+                                    label="Position offset (radians)"
+                                    value={pendingSmartKnobConfig.positionOffsetRadians}
+                                    type="number"
+                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                        setPendingSmartKnobConfig((cur) => {
+                                            return {
+                                                ...cur,
+                                                positionOffsetRadians: event.target.value,
+                                            }
+                                        })
+                                    }}
+                                />
+                                <br />
+                                <TextField
+                                    label="Position text"
+                                    value={pendingSmartKnobConfig.positionText}
+                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                        setPendingSmartKnobConfig((cur) => {
+                                            return {
+                                                ...cur,
+                                                positionText: event.target.value,
+                                            }
+                                        })
+                                    }}
+                                />
+                                <br />
+                                <FormLabel>Meter type</FormLabel>
+                                <RadioGroup
+                                    row
+                                    value={pendingSmartKnobConfig.meterType}
+                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                        console.log('meterType', event.target.value)
+                                        setPendingSmartKnobConfig((cur) => {
+                                            return {
+                                                ...cur,
+                                                meterType: event.target.value,
+                                            }
+                                        })
+                                    }}
+                                >
+                                    <FormControlLabel value={PB.MeterType.NONE} control={<Radio />} label="None" />
+                                    <FormControlLabel
+                                        value={PB.MeterType.VERTICAL}
+                                        control={<Radio />}
+                                        label="Vertical"
+                                    />
+                                    <FormControlLabel
+                                        value={PB.MeterType.HORIZONTAL}
+                                        control={<Radio />}
+                                        label="Horizontal"
+                                    />
+                                    <FormControlLabel
+                                        value={PB.MeterType.CIRCULAR}
+                                        control={<Radio />}
+                                        label="Circular"
+                                    />
+                                    <FormControlLabel value={PB.MeterType.RADIAL} control={<Radio />} label="Radial" />
+                                </RadioGroup>
                                 <br />
                                 <Button type="submit" variant="contained">
                                     Apply
