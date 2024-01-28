@@ -59,7 +59,7 @@ static PB_SmartKnobConfig configs[] = {
         0,
         {},
         0,
-        200,
+        0x00aaff,
         -1,
         "",
         PB_MeterType_VERTICAL
@@ -78,7 +78,7 @@ static PB_SmartKnobConfig configs[] = {
         0,
         {},
         0,
-        0,
+        0xff0000,
         -1,
         "",
         PB_MeterType_VERTICAL
@@ -97,7 +97,7 @@ static PB_SmartKnobConfig configs[] = {
         0,
         {},
         0,
-        73,
+        0xc8ff00,
         -1,
         "",
         PB_MeterType_VERTICAL
@@ -116,7 +116,7 @@ static PB_SmartKnobConfig configs[] = {
         0,
         {},
         0,
-        157,
+        0x00ff9d,
         -1,
         "",
         PB_MeterType_VERTICAL
@@ -135,7 +135,7 @@ static PB_SmartKnobConfig configs[] = {
         0,
         {},
         0,
-        45,
+        0xffbf00,
         -1,
         "",
         PB_MeterType_VERTICAL
@@ -154,7 +154,7 @@ static PB_SmartKnobConfig configs[] = {
         0,
         {},
         0,
-        219,
+        0x0059ff,
         -1,
         "",
         PB_MeterType_VERTICAL
@@ -173,7 +173,7 @@ static PB_SmartKnobConfig configs[] = {
         0,
         {},
         0,
-        25,
+        0xff6a00,
         -1,
         "",
         PB_MeterType_VERTICAL
@@ -192,7 +192,7 @@ static PB_SmartKnobConfig configs[] = {
         0,
         {},
         0,
-        200,
+        0x00aaff,
         -1,
         "",
         PB_MeterType_VERTICAL
@@ -211,7 +211,7 @@ static PB_SmartKnobConfig configs[] = {
         0,
         {},
         0,
-        0,
+        0xff0000,
         -1,
         "",
         PB_MeterType_VERTICAL
@@ -230,7 +230,7 @@ static PB_SmartKnobConfig configs[] = {
         4,
         {2, 10, 21, 22},
         0,
-        73,
+        0xc8ff00,
         -1,
         "",
         PB_MeterType_VERTICAL
@@ -249,7 +249,7 @@ static PB_SmartKnobConfig configs[] = {
         0,
         {},
         0.4,
-        157,
+        0x00ff9d,
         -1,
         "",
         PB_MeterType_VERTICAL
