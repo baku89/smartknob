@@ -43,6 +43,7 @@ static PB_SmartKnobConfig configs[] = {
     // int8_t led_hue;
     // float position_offset_radians;
     // char position_text[10];
+    // PB_MeterType meter_type;
 
     {
         0,
@@ -59,8 +60,9 @@ static PB_SmartKnobConfig configs[] = {
         {},
         0,
         200,
-        0,
-        ""
+        -1,
+        "",
+        PB_MeterType_VERTICAL
     },
     {
         0,
@@ -77,8 +79,9 @@ static PB_SmartKnobConfig configs[] = {
         {},
         0,
         0,
-        0,
-        ""
+        -1,
+        "",
+        PB_MeterType_VERTICAL
     },
     {
         0,
@@ -95,8 +98,9 @@ static PB_SmartKnobConfig configs[] = {
         {},
         0,
         73,
-        0,
-        ""
+        -1,
+        "",
+        PB_MeterType_VERTICAL
     },
     {
         0,
@@ -113,8 +117,9 @@ static PB_SmartKnobConfig configs[] = {
         {},
         0,
         157,
-        0,
-        ""
+        -1,
+        "",
+        PB_MeterType_VERTICAL
     },
     {
         0,
@@ -131,8 +136,9 @@ static PB_SmartKnobConfig configs[] = {
         {},
         0,
         45,
-        0,
-        ""
+        -1,
+        "",
+        PB_MeterType_VERTICAL
     },
     {
         127,
@@ -149,8 +155,9 @@ static PB_SmartKnobConfig configs[] = {
         {},
         0,
         219,
-        0,
-        ""
+        -1,
+        "",
+        PB_MeterType_VERTICAL
     },
     {
         127,
@@ -167,8 +174,9 @@ static PB_SmartKnobConfig configs[] = {
         {},
         0,
         25,
-        0,
-        ""
+        -1,
+        "",
+        PB_MeterType_VERTICAL
     },
     {
         0,
@@ -185,8 +193,9 @@ static PB_SmartKnobConfig configs[] = {
         {},
         0,
         200,
-        0,
-        ""
+        -1,
+        "",
+        PB_MeterType_VERTICAL
     },
     {
         0,
@@ -203,8 +212,9 @@ static PB_SmartKnobConfig configs[] = {
         {},
         0,
         0,
-        0,
-        ""
+        -1,
+        "",
+        PB_MeterType_VERTICAL
     },
     {
         0,
@@ -221,8 +231,9 @@ static PB_SmartKnobConfig configs[] = {
         {2, 10, 21, 22},
         0,
         73,
-        0,
-        ""
+        -1,
+        "",
+        PB_MeterType_VERTICAL
     },
     {
         0,
@@ -239,8 +250,9 @@ static PB_SmartKnobConfig configs[] = {
         {},
         0.4,
         157,
-        0,
-        ""
+        -1,
+        "",
+        PB_MeterType_VERTICAL
     },
 };
 
