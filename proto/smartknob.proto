@@ -226,6 +226,12 @@ message SmartKnobConfig {
      * The type of meter display on the background of LCD.
      */
     MeterType meter_type = 16;
+
+    /**
+     * The center value of the meter display.
+     * If the value is set outside the range of min_position and max_position, it will be clamped.
+     */
+    int32 meter_center = 17;
 }
 
 message RequestState {}

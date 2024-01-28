@@ -127,7 +127,7 @@ typedef struct _PB_SmartKnobConfig {
     uint32_t base_color;
     /* *
  The angular offset of each position/detent in radians.
- Typocally specified in the range [0, PI * 2], with 0 being the top of the display and increasing clockwise.
+ Specified in the range [0, PI * 2], with 0 being the top of the display and increasing clockwise.
  If a negative value is specified, the endpoints will be symmetrically placed around the top of the display. */
     float position_offset_radians;
     /* *
@@ -139,6 +139,10 @@ typedef struct _PB_SmartKnobConfig {
     /* *
  The type of meter display on the background of LCD. */
     PB_MeterType meter_type;
+    /* *
+ The center value of the meter display.
+ If the value is set outside the range of min_position and max_position, it will be clamped. */
+    int32_t meter_center;
 } PB_SmartKnobConfig;
 
 typedef struct _PB_SmartKnobState {
@@ -250,7 +254,7 @@ extern "C" {
 #define PB_Ack_init_default                      {0}
 #define PB_Log_init_default                      {""}
 #define PB_SmartKnobState_init_default           {0, 0, false, PB_SmartKnobConfig_init_default, 0}
-#define PB_SmartKnobConfig_init_default          {0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, {0, 0, 0, 0, 0}, 0, 0, 0, "", _PB_MeterType_MIN}
+#define PB_SmartKnobConfig_init_default          {0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, {0, 0, 0, 0, 0}, 0, 0, 0, "", _PB_MeterType_MIN, 0}
 #define PB_RequestState_init_default             {0}
 #define PB_PersistentConfiguration_init_default  {0, false, PB_MotorCalibration_init_default, false, PB_StrainCalibration_init_default}
 #define PB_MotorCalibration_init_default         {0, 0, 0, 0}
@@ -260,7 +264,7 @@ extern "C" {
 #define PB_Ack_init_zero                         {0}
 #define PB_Log_init_zero                         {""}
 #define PB_SmartKnobState_init_zero              {0, 0, false, PB_SmartKnobConfig_init_zero, 0}
-#define PB_SmartKnobConfig_init_zero             {0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, {0, 0, 0, 0, 0}, 0, 0, 0, "", _PB_MeterType_MIN}
+#define PB_SmartKnobConfig_init_zero             {0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, {0, 0, 0, 0, 0}, 0, 0, 0, "", _PB_MeterType_MIN, 0}
 #define PB_RequestState_init_zero                {0}
 #define PB_PersistentConfiguration_init_zero     {0, false, PB_MotorCalibration_init_zero, false, PB_StrainCalibration_init_zero}
 #define PB_MotorCalibration_init_zero            {0, 0, 0, 0}
@@ -285,6 +289,7 @@ extern "C" {
 #define PB_SmartKnobConfig_position_offset_radians_tag 14
 #define PB_SmartKnobConfig_position_text_tag     15
 #define PB_SmartKnobConfig_meter_type_tag        16
+#define PB_SmartKnobConfig_meter_center_tag      17
 #define PB_SmartKnobState_current_position_tag   1
 #define PB_SmartKnobState_sub_position_unit_tag  2
 #define PB_SmartKnobState_config_tag             3
@@ -364,7 +369,8 @@ X(a, STATIC,   SINGULAR, FLOAT,    snap_point_bias,  12) \
 X(a, STATIC,   SINGULAR, UINT32,   base_color,       13) \
 X(a, STATIC,   SINGULAR, FLOAT,    position_offset_radians,  14) \
 X(a, STATIC,   SINGULAR, STRING,   position_text,    15) \
-X(a, STATIC,   SINGULAR, UENUM,    meter_type,       16)
+X(a, STATIC,   SINGULAR, UENUM,    meter_type,       16) \
+X(a, STATIC,   SINGULAR, INT32,    meter_center,     17)
 #define PB_SmartKnobConfig_CALLBACK NULL
 #define PB_SmartKnobConfig_DEFAULT NULL
 
@@ -426,10 +432,10 @@ extern const pb_msgdesc_t PB_StrainCalibration_msg;
 #define PB_MotorCalibration_size                 15
 #define PB_PersistentConfiguration_size          47
 #define PB_RequestState_size                     0
-#define PB_SmartKnobConfig_size                  209
-#define PB_SmartKnobState_size                   231
+#define PB_SmartKnobConfig_size                  221
+#define PB_SmartKnobState_size                   243
 #define PB_StrainCalibration_size                22
-#define PB_ToSmartknob_size                      221
+#define PB_ToSmartknob_size                      233
 
 #ifdef __cplusplus
 } /* extern "C" */
