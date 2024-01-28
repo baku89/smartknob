@@ -73,7 +73,7 @@ void DisplayTask::run() {
       tft_.fillScreen(TFT_RED);
     } else {
       log("Sprite created!");
-      tft_.fillScreen(TFT_PURPLE);
+      tft_.fillScreen(TFT_BLACK);
     }
     spr_.setTextColor(0xFFFF, TFT_BLACK);
     
