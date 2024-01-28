@@ -21,7 +21,7 @@ const defaultConfig: Config = {
     text: 'Hello from\nweb serial!',
     detentPositions: [],
     snapPointBias: 0,
-    ledHue: 0,
+    baseColor: 0xffffff,
     positionOffsetRadians: -1,
     positionText: '',
     meterType: PB.MeterType.RADIAL,
@@ -133,10 +133,10 @@ export const App: React.FC<AppProps> = () => {
                                         text: pendingSmartKnobConfig.text,
                                         detentPositions: [],
                                         snapPointBias: parseFloat(pendingSmartKnobConfig.snapPointBias) || 0,
-                                        ledHue: 0,
+                                        baseColor: parseInt(pendingSmartKnobConfig.baseColor.slice(1), 16) || 0xffffff,
                                         positionOffsetRadians: parseFloat(pendingSmartKnobConfig.positionOffsetRadians),
                                         positionText: pendingSmartKnobConfig.positionText,
-                                        meterType: parseInt(pendingSmartKnobConfig.meterType) as PB.MeterType,
+                                        meterType: parseInt(pendingSmartKnobConfig.meterType) || PB.MeterType.VERTICAL as PB.MeterType,
                                     })
                                 }}
                             >
@@ -290,6 +290,19 @@ export const App: React.FC<AppProps> = () => {
                                 />
                                 <br />
                                 <TextField
+                                    label="Base color"
+                                    value={pendingSmartKnobConfig.baseColor}
+                                    type="color"
+                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                        setPendingSmartKnobConfig((cur) => {
+                                            return {
+                                                ...cur,
+                                                baseColor: event.target.value,
+                                            }
+                                        })
+                                    }}
+                                />
+                                <TextField
                                     label="Position offset (radians)"
                                     value={pendingSmartKnobConfig.positionOffsetRadians}
                                     type="number"
@@ -302,7 +315,6 @@ export const App: React.FC<AppProps> = () => {
                                         })
                                     }}
                                 />
-                                <br />
                                 <TextField
                                     label="Position text"
                                     value={pendingSmartKnobConfig.positionText}
