@@ -38,6 +38,14 @@ message Log {
     string msg = 1 [(nanopb).max_length = 255];
 }
 
+enum MeterType {
+    VERTICAL = 0;
+    HORIZONTAL = 1;
+    RADIAL = 2;
+    CIRCULAR = 3;
+    NONE = 63;
+}
+
 message SmartKnobState {
     /** Current integer position of the knob. (Detent resolution is at integer positions) */
     int32 current_position = 1;
@@ -211,6 +219,11 @@ message SmartKnobConfig {
      * It supports sprintf-style formatting. When this is left empty, the value will be displayed as it is.
      */
     string position_text = 15 [(nanopb).max_length = 10];
+
+    /**
+     * The type of meter display on the background of LCD.
+     */
+    MeterType meter_type = 16;
 }
 
 message RequestState {}

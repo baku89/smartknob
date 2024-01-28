@@ -9,6 +9,15 @@
 #error Regenerate this file with the current version of nanopb generator.
 #endif
 
+/* Enum definitions */
+typedef enum _PB_MeterType {
+    PB_MeterType_VERTICAL = 0,
+    PB_MeterType_HORIZONTAL = 1,
+    PB_MeterType_RADIAL = 2,
+    PB_MeterType_CIRCULAR = 3,
+    PB_MeterType_NONE = 63
+} PB_MeterType;
+
 /* Struct definitions */
 /* * Lets the host know that a ToSmartknob message was received and should not be retried. */
 typedef struct _PB_Ack {
@@ -125,6 +134,9 @@ typedef struct _PB_SmartKnobConfig {
  10-byte string for displaying the current position with arbitrary format.
  It supports sprintf-style formatting. When this is left empty, the value will be displayed as it is. */
     char position_text[11];
+    /* *
+ The type of meter display on the background of LCD. */
+    PB_MeterType meter_type;
 } PB_SmartKnobConfig;
 
 typedef struct _PB_SmartKnobState {
@@ -213,13 +225,30 @@ typedef struct _PB_PersistentConfiguration {
 extern "C" {
 #endif
 
+/* Helper constants for enums */
+#define _PB_MeterType_MIN PB_MeterType_VERTICAL
+#define _PB_MeterType_MAX PB_MeterType_NONE
+#define _PB_MeterType_ARRAYSIZE ((PB_MeterType)(PB_MeterType_NONE+1))
+
+
+
+
+
+
+#define PB_SmartKnobConfig_meter_type_ENUMTYPE PB_MeterType
+
+
+
+
+
+
 /* Initializer values for message structs */
 #define PB_FromSmartKnob_init_default            {0, 0, {PB_Ack_init_default}}
 #define PB_ToSmartknob_init_default              {0, 0, 0, {PB_RequestState_init_default}}
 #define PB_Ack_init_default                      {0}
 #define PB_Log_init_default                      {""}
 #define PB_SmartKnobState_init_default           {0, 0, false, PB_SmartKnobConfig_init_default, 0}
-#define PB_SmartKnobConfig_init_default          {0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, {0, 0, 0, 0, 0}, 0, 0, 0, ""}
+#define PB_SmartKnobConfig_init_default          {0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, {0, 0, 0, 0, 0}, 0, 0, 0, "", _PB_MeterType_MIN}
 #define PB_RequestState_init_default             {0}
 #define PB_PersistentConfiguration_init_default  {0, false, PB_MotorCalibration_init_default, false, PB_StrainCalibration_init_default}
 #define PB_MotorCalibration_init_default         {0, 0, 0, 0}
@@ -229,7 +258,7 @@ extern "C" {
 #define PB_Ack_init_zero                         {0}
 #define PB_Log_init_zero                         {""}
 #define PB_SmartKnobState_init_zero              {0, 0, false, PB_SmartKnobConfig_init_zero, 0}
-#define PB_SmartKnobConfig_init_zero             {0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, {0, 0, 0, 0, 0}, 0, 0, 0, ""}
+#define PB_SmartKnobConfig_init_zero             {0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, {0, 0, 0, 0, 0}, 0, 0, 0, "", _PB_MeterType_MIN}
 #define PB_RequestState_init_zero                {0}
 #define PB_PersistentConfiguration_init_zero     {0, false, PB_MotorCalibration_init_zero, false, PB_StrainCalibration_init_zero}
 #define PB_MotorCalibration_init_zero            {0, 0, 0, 0}
@@ -253,6 +282,7 @@ extern "C" {
 #define PB_SmartKnobConfig_led_hue_tag           13
 #define PB_SmartKnobConfig_position_offset_radians_tag 14
 #define PB_SmartKnobConfig_position_text_tag     15
+#define PB_SmartKnobConfig_meter_type_tag        16
 #define PB_SmartKnobState_current_position_tag   1
 #define PB_SmartKnobState_sub_position_unit_tag  2
 #define PB_SmartKnobState_config_tag             3
@@ -331,7 +361,8 @@ X(a, STATIC,   REPEATED, INT32,    detent_positions,  11) \
 X(a, STATIC,   SINGULAR, FLOAT,    snap_point_bias,  12) \
 X(a, STATIC,   SINGULAR, INT32,    led_hue,          13) \
 X(a, STATIC,   SINGULAR, FLOAT,    position_offset_radians,  14) \
-X(a, STATIC,   SINGULAR, STRING,   position_text,    15)
+X(a, STATIC,   SINGULAR, STRING,   position_text,    15) \
+X(a, STATIC,   SINGULAR, UENUM,    meter_type,       16)
 #define PB_SmartKnobConfig_CALLBACK NULL
 #define PB_SmartKnobConfig_DEFAULT NULL
 
@@ -393,10 +424,10 @@ extern const pb_msgdesc_t PB_StrainCalibration_msg;
 #define PB_MotorCalibration_size                 15
 #define PB_PersistentConfiguration_size          47
 #define PB_RequestState_size                     0
-#define PB_SmartKnobConfig_size                  201
-#define PB_SmartKnobState_size                   223
+#define PB_SmartKnobConfig_size                  204
+#define PB_SmartKnobState_size                   226
 #define PB_StrainCalibration_size                22
-#define PB_ToSmartknob_size                      213
+#define PB_ToSmartknob_size                      216
 
 #ifdef __cplusplus
 } /* extern "C" */
