@@ -29,6 +29,33 @@ static void drawPlayButton(TFT_eSprite& spr, int x, int y, int width, int height
   );
 }
 
+/**
+ * Draws a Pac-man style fan on the given sprite. It is used to draw a radial meter.
+*/
+static void fillFan(TFT_eSprite& spr, int32_t cx, int32_t cy, int32_t radius, float start_radians, float end_radians, float step_radians, uint16_t color) {
+  if (start_radians > end_radians) {
+    float tmp = start_radians;
+    start_radians = end_radians;
+    end_radians = tmp;
+  }
+
+  int32_t x1 = cx + cosf(start_radians) * radius;
+  int32_t y1 = cy - sinf(start_radians) * radius;
+  int32_t x2, y2;
+
+  for (float r = start_radians + step_radians; r < end_radians; r += step_radians) {
+    x2 = cx + cosf(r) * radius;
+    y2 = cy - sinf(r) * radius;
+    spr.fillTriangle(cx, cy, x1, y1, x2, y2, color);
+    x1 = x2;
+    y1 = y2;
+  }
+
+  x2 = cx + cosf(end_radians) * radius;
+  y2 = cy - sinf(end_radians) * radius;
+  spr.fillTriangle(cx, cy, x1, y1, x2, y2, color);
+}
+
 void DisplayTask::run() {
     tft_.begin();
     tft_.invertDisplay(1);
