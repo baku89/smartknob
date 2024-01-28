@@ -80,7 +80,6 @@ void DisplayTask::run() {
     PB_SmartKnobState state;
 
     const int RADIUS = TFT_WIDTH / 2;
-    const uint16_t FILL_COLOR = spr_.color565(80, 80, 80);
     const uint16_t DOT_COLOR = spr_.color565(255, 255, 255);
 
     spr_.setTextDatum(CC_DATUM);
@@ -124,19 +123,26 @@ void DisplayTask::run() {
 
         if (!sk_demo_mode) {
           // Draws the meter on the background
+          const float background_brightness = 0.75;
+
+          uint8_t r = float(0xff & (state.config.base_color >> 16)) * background_brightness;
+          uint8_t g = float(0xff & (state.config.base_color >> 8)) * background_brightness;
+          uint8_t b = float(0xff & (state.config.base_color >> 0)) * background_brightness;
+          uint16_t meterColor = spr_.color565(r, g, b);
+          
           bool has_range = num_positions > 1;
 
           float t = float(state.current_position - state.config.min_position) / (state.config.max_position - state.config.min_position);
 
           if (has_range) {
             if (state.config.meter_type == PB_MeterType_VERTICAL) {
-              spr_.fillRect(0, TFT_HEIGHT * (1 - t), TFT_WIDTH, TFT_HEIGHT * t, FILL_COLOR);
+              spr_.fillRect(0, TFT_HEIGHT * (1 - t), TFT_WIDTH, TFT_HEIGHT * t, meterColor);
             } else if (state.config.meter_type == PB_MeterType_HORIZONTAL) {
-              spr_.fillRect(0, 0, TFT_WIDTH * t, TFT_HEIGHT, FILL_COLOR);
+              spr_.fillRect(0, 0, TFT_WIDTH * t, TFT_HEIGHT, meterColor);
             } else if (state.config.meter_type == PB_MeterType_CIRCULAR) {
               int32_t cx = TFT_WIDTH / 2;
               int32_t cy = TFT_HEIGHT / 2;
-              spr_.fillCircle(cx, cy, RADIUS * t, FILL_COLOR);
+              spr_.fillCircle(cx, cy, RADIUS * t, meterColor);
             }
           }
 
@@ -151,7 +157,7 @@ void DisplayTask::run() {
               }
             }
 
-            fillFan(spr_, TFT_WIDTH / 2, TFT_HEIGHT / 2, RADIUS * 2, origin_angle, raw_angle, radians(30), FILL_COLOR);
+            fillFan(spr_, TFT_WIDTH / 2, TFT_HEIGHT / 2, RADIUS * 2, origin_angle, raw_angle, radians(30), meterColor);
           }
 
           // Draws a position text
