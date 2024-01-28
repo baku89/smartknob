@@ -78,9 +78,17 @@ void DisplayTask::run() {
         float left_bound = PI / 2;
         float right_bound = 0;
         if (num_positions > 0) {
-          float range_radians = (state.config.max_position - state.config.min_position) * state.config.position_width_radians;
-          left_bound = PI / 2 + range_radians / 2;
-          right_bound = PI / 2 - range_radians / 2;
+          if (state.config.position_offset_radians < 0.0) {
+            // If position_offset_radians is negative, the endpoints are symmetrically placed across the top of the display.
+            float range_radians = (state.config.max_position - state.config.min_position) * state.config.position_width_radians;
+            left_bound = PI / 2 + range_radians / 2;
+            right_bound = PI / 2 - range_radians / 2;
+          } else {
+            // Otherwise, the endpoints are placed based on the offset origin specified in position_offset_radians.
+            float origin = PI / 2 - state.config.position_offset_radians;
+            left_bound = origin - state.config.min_position * state.config.position_width_radians;
+            right_bound = origin - state.config.max_position * state.config.position_width_radians;
+          }
         }
         float raw_angle = left_bound - (state.current_position - state.config.min_position) * state.config.position_width_radians;
         float adjusted_angle = raw_angle - adjusted_sub_position;
