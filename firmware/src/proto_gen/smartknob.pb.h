@@ -122,9 +122,9 @@ typedef struct _PB_SmartKnobConfig {
  but can be easily disturbed to return "home" towards position 0. */
     float snap_point_bias;
     /* *
- Hue (0-255) for all 8 ring LEDs, if supported. Note: this will likely be replaced
+ Base color for LCD and all 8 ring LEDs, if supported. Note: this will likely be replaced
  with more configurability in a future protocol version. */
-    int16_t led_hue;
+    uint32_t base_color;
     /* *
  The angular offset of each position/detent in radians.
  Typocally specified in the range [0, PI * 2], with 0 being the top of the display and increasing clockwise.
@@ -279,7 +279,7 @@ extern "C" {
 #define PB_SmartKnobConfig_text_tag              10
 #define PB_SmartKnobConfig_detent_positions_tag  11
 #define PB_SmartKnobConfig_snap_point_bias_tag   12
-#define PB_SmartKnobConfig_led_hue_tag           13
+#define PB_SmartKnobConfig_base_color_tag        13
 #define PB_SmartKnobConfig_position_offset_radians_tag 14
 #define PB_SmartKnobConfig_position_text_tag     15
 #define PB_SmartKnobConfig_meter_type_tag        16
@@ -359,7 +359,7 @@ X(a, STATIC,   SINGULAR, FLOAT,    snap_point,        9) \
 X(a, STATIC,   SINGULAR, STRING,   text,             10) \
 X(a, STATIC,   REPEATED, INT32,    detent_positions,  11) \
 X(a, STATIC,   SINGULAR, FLOAT,    snap_point_bias,  12) \
-X(a, STATIC,   SINGULAR, INT32,    led_hue,          13) \
+X(a, STATIC,   SINGULAR, UINT32,   base_color,       13) \
 X(a, STATIC,   SINGULAR, FLOAT,    position_offset_radians,  14) \
 X(a, STATIC,   SINGULAR, STRING,   position_text,    15) \
 X(a, STATIC,   SINGULAR, UENUM,    meter_type,       16)
@@ -424,10 +424,10 @@ extern const pb_msgdesc_t PB_StrainCalibration_msg;
 #define PB_MotorCalibration_size                 15
 #define PB_PersistentConfiguration_size          47
 #define PB_RequestState_size                     0
-#define PB_SmartKnobConfig_size                  204
-#define PB_SmartKnobState_size                   226
+#define PB_SmartKnobConfig_size                  199
+#define PB_SmartKnobState_size                   221
 #define PB_StrainCalibration_size                22
-#define PB_ToSmartknob_size                      216
+#define PB_ToSmartknob_size                      211
 
 #ifdef __cplusplus
 } /* extern "C" */

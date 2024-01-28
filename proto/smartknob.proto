@@ -202,10 +202,10 @@ message SmartKnobConfig {
     float snap_point_bias = 12;
 
     /**
-     * Hue (0-255) for all 8 ring LEDs, if supported. Note: this will likely be replaced
+     * Base color for LCD and all 8 ring LEDs, if supported. Note: this will likely be replaced
      * with more configurability in a future protocol version.
      */
-    int32 led_hue = 13 [(nanopb).int_size = IS_16];
+    uint32 base_color = 13;
 
     /**
      * The angular offset of each position/detent in radians.
