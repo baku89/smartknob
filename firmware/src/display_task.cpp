@@ -102,7 +102,17 @@ void DisplayTask::run() {
           }
 
           spr_.setFreeFont(&Roboto_Light_60);
-          spr_.drawNumber(state.current_position, TFT_WIDTH / 2, TFT_HEIGHT / 2 - VALUE_OFFSET, 1);
+
+          if (state.config.position_text[0] == '\0') {
+            // If no position_text is specified, just draw the number
+            spr_.drawNumber(state.current_position, TFT_WIDTH / 2, TFT_HEIGHT / 2 - VALUE_OFFSET, 1);          
+          } else {
+            // Otherwise, draw the value text while formatting the number
+            char buf[10];
+            snprintf(buf, sizeof(buf), state.config.position_text, state.current_position);
+            spr_.drawString(buf, TFT_WIDTH / 2, TFT_HEIGHT / 2 - VALUE_OFFSET, 1);
+          }
+
           spr_.setFreeFont(&DESCRIPTION_FONT);
           int32_t line_y = TFT_HEIGHT / 2 + DESCRIPTION_Y_OFFSET;
           char* start = state.config.text;
