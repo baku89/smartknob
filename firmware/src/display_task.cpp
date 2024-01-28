@@ -163,14 +163,12 @@ void DisplayTask::run() {
           // Draws a position text
           spr_.setFreeFont(&Roboto_Light_60);
 
-          if (state.config.position_text[0] == '\0') {
-            // If no position_text is specified, just draw the number
-            spr_.drawNumber(state.current_position, TFT_WIDTH / 2, TFT_HEIGHT / 2 - VALUE_OFFSET, 1);          
+          if (state.config.position_text[0] != '\0') {
+            // Draws position_text if it's specified
+            spr_.drawString(state.config.position_text, TFT_WIDTH / 2, TFT_HEIGHT / 2 - VALUE_OFFSET, 1);
           } else {
-            // Otherwise, draw the value text while formatting the number
-            char buf[10];
-            snprintf(buf, sizeof(buf), state.config.position_text, state.current_position);
-            spr_.drawString(buf, TFT_WIDTH / 2, TFT_HEIGHT / 2 - VALUE_OFFSET, 1);
+            // Otherwise, draw the number of current position normally
+            spr_.drawNumber(state.current_position, TFT_WIDTH / 2, TFT_HEIGHT / 2 - VALUE_OFFSET, 1);
           }
 
           // Draws a description text
