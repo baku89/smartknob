@@ -2,30 +2,160 @@ import React, {useEffect, useState} from 'react'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import {PB} from 'smartknobjs-proto'
-import {Box, Button, CardActions, Paper, TextField, FormLabel, FormControlLabel, RadioGroup, Radio} from '@mui/material'
+import {
+    Box,
+    Button,
+    CardActions,
+    Paper,
+    TextField,
+    FormLabel,
+    FormControlLabel,
+    InputLabel,
+    RadioGroup,
+    Radio,
+    Select,
+    Divider,
+    MenuItem,
+    SelectChangeEvent,
+} from '@mui/material'
 import {NoUndefinedField} from './util'
 import {SmartKnobWebSerial} from 'smartknobjs-webserial'
 
 type Config = NoUndefinedField<PB.ISmartKnobConfig>
+type StringConfig = {[P in keyof Config]: string}
 
-const defaultConfig: Config = {
-    position: 0,
-    subPositionUnit: 0,
-    positionNonce: Math.floor(Math.random() * 255),
-    minPosition: 0,
-    maxPosition: 20,
-    positionWidthRadians: (15 * Math.PI) / 180,
-    detentStrengthUnit: 0.5,
-    endstopStrengthUnit: 1,
-    snapPoint: 0.7,
-    text: 'Hello from\nweb serial!',
-    detentPositions: [],
-    snapPointBias: 0,
-    baseColor: 0xffffff,
-    positionOffsetRadians: -1,
-    positionText: '',
-    meterType: PB.MeterType.RADIAL,
-    meterCenter: 0,
+const presets: Record<string, Config> = {
+    default: {
+        position: 0,
+        subPositionUnit: 0,
+        positionNonce: Math.floor(Math.random() * 255),
+        minPosition: 0,
+        maxPosition: 20,
+        positionWidthRadians: (15 * Math.PI) / 180,
+        detentStrengthUnit: 0.5,
+        endstopStrengthUnit: 1,
+        snapPoint: 0.7,
+        text: 'Hello from\nweb serial!',
+        detentPositions: [],
+        snapPointBias: 0,
+        baseColor: 0xffffff,
+        positionOffsetRadians: -1,
+        positionText: '',
+        meterType: PB.MeterType.RADIAL,
+        meterCenter: 0,
+    },
+    angle: {
+        position: 0,
+        subPositionUnit: 0,
+        positionNonce: Math.floor(Math.random() * 255),
+        minPosition: 0,
+        maxPosition: -1,
+        positionWidthRadians: Math.PI / 180,
+        detentStrengthUnit: 1,
+        endstopStrengthUnit: 1,
+        snapPoint: 0.7,
+        text: 'deg',
+        detentPositions: [],
+        snapPointBias: 0,
+        baseColor: 0xff0000,
+        positionOffsetRadians: Math.PI / 2,
+        positionText: '',
+        meterType: PB.MeterType.RADIAL,
+        meterCenter: 0,
+    },
+    radius: {
+        position: 10,
+        subPositionUnit: 0,
+        positionNonce: Math.floor(Math.random() * 255),
+        minPosition: 0,
+        maxPosition: 100,
+        positionWidthRadians: (2 * Math.PI) / 180,
+        detentStrengthUnit: 0.5,
+        endstopStrengthUnit: 1,
+        snapPoint: 0.7,
+        text: 'px',
+        detentPositions: [],
+        snapPointBias: 0,
+        baseColor: 0x00ff00,
+        positionOffsetRadians: -1,
+        positionText: '',
+        meterType: PB.MeterType.CIRCULAR,
+        meterCenter: 0,
+    },
+    toggle: {
+        position: 0,
+        subPositionUnit: 0,
+        positionNonce: Math.floor(Math.random() * 255),
+        minPosition: 0,
+        maxPosition: 1,
+        positionWidthRadians: (90 * Math.PI) / 180,
+        detentStrengthUnit: 0.5,
+        endstopStrengthUnit: 1,
+        snapPoint: 0.5,
+        text: 'Toggle',
+        detentPositions: [],
+        snapPointBias: 0,
+        baseColor: 0x0000ff,
+        positionOffsetRadians: -1,
+        positionText: '',
+        meterType: PB.MeterType.VERTICAL,
+        meterCenter: 0,
+    },
+    slider: {
+        position: 0,
+        subPositionUnit: 0,
+        positionNonce: Math.floor(Math.random() * 255),
+        minPosition: -100,
+        maxPosition: 100,
+        positionWidthRadians: (1 * Math.PI) / 180,
+        detentStrengthUnit: 0.5,
+        endstopStrengthUnit: 1,
+        snapPoint: 0.5,
+        text: '%',
+        detentPositions: [],
+        snapPointBias: 0,
+        baseColor: 0xc8ff00,
+        positionOffsetRadians: -1,
+        positionText: '',
+        meterType: PB.MeterType.HORIZONTAL,
+        meterCenter: 0,
+    },
+}
+
+function stringifyConfig(config: Config): StringConfig {
+    return Object.fromEntries(
+        Object.entries(config).map(([key, value]) => {
+            if (key === 'baseColor') {
+                return [key, '#' + (value as number).toString(16)]
+            } else {
+                return [key, String(value)]
+            }
+        }),
+    ) as {
+        [P in keyof Config]: string
+    }
+}
+
+function parseStringConfig(stringConfig: StringConfig): Config {
+    return {
+        position: parseInt(stringConfig.position) || 0,
+        subPositionUnit: parseFloat(stringConfig.subPositionUnit) || 0,
+        positionNonce: parseInt(stringConfig.positionNonce) || 0,
+        minPosition: parseInt(stringConfig.minPosition) || 0,
+        maxPosition: parseInt(stringConfig.maxPosition) || 0,
+        positionWidthRadians: parseFloat(stringConfig.positionWidthRadians) || 0,
+        detentStrengthUnit: parseFloat(stringConfig.detentStrengthUnit) || 0,
+        endstopStrengthUnit: parseFloat(stringConfig.endstopStrengthUnit) || 0,
+        snapPoint: parseFloat(stringConfig.snapPoint) || 0,
+        text: stringConfig.text,
+        detentPositions: [],
+        snapPointBias: parseFloat(stringConfig.snapPointBias) || 0,
+        baseColor: parseInt(stringConfig.baseColor.slice(1), 16) || 0xffffff,
+        positionOffsetRadians: parseFloat(stringConfig.positionOffsetRadians),
+        positionText: stringConfig.positionText,
+        meterType: parseInt(stringConfig.meterType) || (PB.MeterType.VERTICAL as PB.MeterType),
+        meterCenter: parseFloat(stringConfig.meterCenter) || 0,
+    }
 }
 
 export type AppProps = object
@@ -37,7 +167,7 @@ export const App: React.FC<AppProps> = () => {
         }) as NoUndefinedField<PB.ISmartKnobState>,
     )
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [smartKnobConfig, setSmartKnobConfig] = useState<Config>(defaultConfig)
+    const [smartKnobConfig, setSmartKnobConfig] = useState<Config>(presets['default'])
     useEffect(() => {
         console.log('send config', smartKnobConfig)
         smartKnob?.sendConfig(PB.SmartKnobConfig.create(smartKnobConfig))
@@ -56,19 +186,9 @@ export const App: React.FC<AppProps> = () => {
         smartKnobConfig.detentPositions,
         smartKnobConfig.snapPointBias,
     ])
-    const [pendingSmartKnobConfig, setPendingSmartKnobConfig] = useState<{[P in keyof Config]: string}>(() => {
-        return Object.fromEntries(
-            Object.entries(defaultConfig).map(([key, value]) => {
-                if (key === 'baseColor') {
-                    return [key, '#' + (value as number).toString(16)]
-                } else {
-                    return [key, String(value)]
-                }
-            }),
-        ) as {
-            [P in keyof Config]: string
-        }
-    })
+    const [pendingSmartKnobConfig, setPendingSmartKnobConfig] = useState<{[P in keyof Config]: string}>(() =>
+        stringifyConfig(presets['default']),
+    )
 
     const connectToSerial = async () => {
         try {
@@ -92,7 +212,7 @@ export const App: React.FC<AppProps> = () => {
                             console.log('LOG from smartknob', message.log?.msg)
                         }
                     },
-                    {baudRate: 115200},
+                    {baudRate: 1000000},
                 )
                 setSmartKnob(smartKnob)
                 const loop = smartKnob.openAndLoop()
@@ -108,6 +228,16 @@ export const App: React.FC<AppProps> = () => {
             setSmartKnob(null)
         }
     }
+
+    function applyPreset(event: SelectChangeEvent<string>) {
+        const basePreset = event.target.value
+        const config = presets[basePreset]
+        setPendingSmartKnobConfig(stringifyConfig(config))
+        setSmartKnobConfig(config)
+        setBasePreset(basePreset)
+    }
+
+    const [basePreset, setBasePreset] = useState('default')
 
     return (
         <>
@@ -127,31 +257,26 @@ export const App: React.FC<AppProps> = () => {
                                 autoComplete="off"
                                 onSubmit={(event) => {
                                     event.preventDefault()
-                                    setSmartKnobConfig({
-                                        position: parseInt(pendingSmartKnobConfig.position) || 0,
-                                        subPositionUnit: parseFloat(pendingSmartKnobConfig.subPositionUnit) || 0,
-                                        positionNonce: parseInt(pendingSmartKnobConfig.positionNonce) || 0,
-                                        minPosition: parseInt(pendingSmartKnobConfig.minPosition) || 0,
-                                        maxPosition: parseInt(pendingSmartKnobConfig.maxPosition) || 0,
-                                        positionWidthRadians:
-                                            parseFloat(pendingSmartKnobConfig.positionWidthRadians) || 0,
-                                        detentStrengthUnit: parseFloat(pendingSmartKnobConfig.detentStrengthUnit) || 0,
-                                        endstopStrengthUnit:
-                                            parseFloat(pendingSmartKnobConfig.endstopStrengthUnit) || 0,
-                                        snapPoint: parseFloat(pendingSmartKnobConfig.snapPoint) || 0,
-                                        text: pendingSmartKnobConfig.text,
-                                        detentPositions: [],
-                                        snapPointBias: parseFloat(pendingSmartKnobConfig.snapPointBias) || 0,
-                                        baseColor: parseInt(pendingSmartKnobConfig.baseColor.slice(1), 16) || 0xffffff,
-                                        positionOffsetRadians: parseFloat(pendingSmartKnobConfig.positionOffsetRadians),
-                                        positionText: pendingSmartKnobConfig.positionText,
-                                        meterType:
-                                            parseInt(pendingSmartKnobConfig.meterType) ||
-                                            (PB.MeterType.VERTICAL as PB.MeterType),
-                                        meterCenter: parseFloat(pendingSmartKnobConfig.meterCenter) || 0,
-                                    })
+                                    setSmartKnobConfig(parseStringConfig(pendingSmartKnobConfig))
                                 }}
                             >
+                                <Box className="MuiTextField-root">
+                                    <InputLabel id="preset-label">Preset</InputLabel>
+                                    <Select
+                                        value={basePreset}
+                                        onChange={applyPreset}
+                                        labelId="preset-label"
+                                        id="preset"
+                                    >
+                                        {Object.keys(presets).map((k) => (
+                                            <MenuItem key={k} value={k}>
+                                                {k}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </Box>
+                                <Divider />
+                                <br />
                                 <TextField
                                     label="Position"
                                     value={pendingSmartKnobConfig.position}
