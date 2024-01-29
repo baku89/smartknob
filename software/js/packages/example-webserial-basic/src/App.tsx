@@ -25,6 +25,7 @@ const defaultConfig: Config = {
     positionOffsetRadians: -1,
     positionText: '',
     meterType: PB.MeterType.RADIAL,
+    meterCenter: 0,
 }
 
 export type AppProps = object
@@ -136,7 +137,10 @@ export const App: React.FC<AppProps> = () => {
                                         baseColor: parseInt(pendingSmartKnobConfig.baseColor.slice(1), 16) || 0xffffff,
                                         positionOffsetRadians: parseFloat(pendingSmartKnobConfig.positionOffsetRadians),
                                         positionText: pendingSmartKnobConfig.positionText,
-                                        meterType: parseInt(pendingSmartKnobConfig.meterType) || PB.MeterType.VERTICAL as PB.MeterType,
+                                        meterType:
+                                            parseInt(pendingSmartKnobConfig.meterType) ||
+                                            (PB.MeterType.VERTICAL as PB.MeterType),
+                                        meterCenter: parseFloat(pendingSmartKnobConfig.meterCenter) || 0,
                                     })
                                 }}
                             >
@@ -315,6 +319,7 @@ export const App: React.FC<AppProps> = () => {
                                         })
                                     }}
                                 />
+                                <br />
                                 <TextField
                                     label="Position text"
                                     value={pendingSmartKnobConfig.positionText}
@@ -323,6 +328,18 @@ export const App: React.FC<AppProps> = () => {
                                             return {
                                                 ...cur,
                                                 positionText: event.target.value,
+                                            }
+                                        })
+                                    }}
+                                />
+                                <TextField
+                                    label="Meter center"
+                                    value={pendingSmartKnobConfig.meterCenter}
+                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                        setPendingSmartKnobConfig((cur) => {
+                                            return {
+                                                ...cur,
+                                                meterCenter: event.target.value,
                                             }
                                         })
                                     }}
