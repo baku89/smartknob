@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 #if SK_LEDS
 #include <FastLED.h>
 #endif
@@ -62,7 +64,8 @@ static PB_SmartKnobConfig configs[] = {
         0x00aaff,
         -1,
         "",
-        PB_MeterType_VERTICAL
+        PB_MeterType_RADIAL,
+        0
     },
     {
         0,
@@ -81,7 +84,8 @@ static PB_SmartKnobConfig configs[] = {
         0xff0000,
         -1,
         "",
-        PB_MeterType_VERTICAL
+        PB_MeterType_VERTICAL,
+        INT32_MIN
     },
     {
         0,
@@ -100,7 +104,8 @@ static PB_SmartKnobConfig configs[] = {
         0xc8ff00,
         -1,
         "",
-        PB_MeterType_VERTICAL
+        PB_MeterType_VERTICAL,
+        INT32_MIN
     },
     {
         0,
@@ -119,7 +124,8 @@ static PB_SmartKnobConfig configs[] = {
         0x00ff9d,
         -1,
         "",
-        PB_MeterType_VERTICAL
+        PB_MeterType_VERTICAL,
+        INT32_MIN
     },
     {
         0,
@@ -138,7 +144,8 @@ static PB_SmartKnobConfig configs[] = {
         0xffbf00,
         -1,
         "",
-        PB_MeterType_VERTICAL
+        PB_MeterType_VERTICAL,
+        INT32_MIN
     },
     {
         127,
@@ -157,7 +164,8 @@ static PB_SmartKnobConfig configs[] = {
         0x0059ff,
         -1,
         "",
-        PB_MeterType_VERTICAL
+        PB_MeterType_VERTICAL,
+        INT32_MIN
     },
     {
         127,
@@ -176,7 +184,8 @@ static PB_SmartKnobConfig configs[] = {
         0xff6a00,
         -1,
         "",
-        PB_MeterType_VERTICAL
+        PB_MeterType_VERTICAL,
+        INT32_MIN
     },
     {
         0,
@@ -195,7 +204,8 @@ static PB_SmartKnobConfig configs[] = {
         0x00aaff,
         -1,
         "",
-        PB_MeterType_VERTICAL
+        PB_MeterType_VERTICAL,
+        INT32_MIN
     },
     {
         0,
@@ -214,7 +224,8 @@ static PB_SmartKnobConfig configs[] = {
         0xff0000,
         -1,
         "",
-        PB_MeterType_VERTICAL
+        PB_MeterType_VERTICAL,
+        INT32_MIN
     },
     {
         0,
@@ -233,7 +244,8 @@ static PB_SmartKnobConfig configs[] = {
         0xc8ff00,
         -1,
         "",
-        PB_MeterType_VERTICAL
+        PB_MeterType_VERTICAL,
+        INT32_MIN
     },
     {
         0,
@@ -252,7 +264,8 @@ static PB_SmartKnobConfig configs[] = {
         0x00ff9d,
         -1,
         "",
-        PB_MeterType_VERTICAL
+        PB_MeterType_VERTICAL,
+        INT32_MIN
     },
 };
 
