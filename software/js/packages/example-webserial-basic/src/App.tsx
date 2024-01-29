@@ -57,7 +57,15 @@ export const App: React.FC<AppProps> = () => {
         smartKnobConfig.snapPointBias,
     ])
     const [pendingSmartKnobConfig, setPendingSmartKnobConfig] = useState<{[P in keyof Config]: string}>(() => {
-        return Object.fromEntries(Object.entries(defaultConfig).map(([key, value]) => [key, String(value)])) as {
+        return Object.fromEntries(
+            Object.entries(defaultConfig).map(([key, value]) => {
+                if (key === 'baseColor') {
+                    return [key, '#' + (value as number).toString(16)]
+                } else {
+                    return [key, String(value)]
+                }
+            }),
+        ) as {
             [P in keyof Config]: string
         }
     })
