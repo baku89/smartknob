@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import {PB} from 'smartknobjs-proto'
@@ -16,7 +16,6 @@ import {
     Select,
     Divider,
     MenuItem,
-    SelectChangeEvent,
 } from '@mui/material'
 import {NoUndefinedField} from './util'
 import {SmartKnobWebSerial} from 'smartknobjs-webserial'
@@ -160,6 +159,7 @@ function parseStringConfig(stringConfig: StringConfig): Config {
 
 export type AppProps = object
 export const App: React.FC<AppProps> = () => {
+    const hasSmartknobInitialized = useRef(false)
     const [smartKnob, setSmartKnob] = useState<SmartKnobWebSerial | null>(null)
     const [smartKnobState, setSmartKnobState] = useState<NoUndefinedField<PB.ISmartKnobState>>(
         PB.SmartKnobState.toObject(PB.SmartKnobState.create({config: PB.SmartKnobConfig.create()}), {
@@ -218,6 +218,7 @@ export const App: React.FC<AppProps> = () => {
                 const loop = smartKnob.openAndLoop()
                 console.log('FIXME')
                 smartKnob.sendConfig(PB.SmartKnobConfig.create(smartKnobConfig))
+                hasSmartknobInitialized.current = false
                 await loop
             } else {
                 console.error('Web Serial API is not supported in this browser.')
@@ -229,8 +230,7 @@ export const App: React.FC<AppProps> = () => {
         }
     }
 
-    function applyPreset(event: SelectChangeEvent<string>) {
-        const basePreset = event.target.value
+    function applyPreset(basePreset: string) {
         const config = presets[basePreset]
         setPendingSmartKnobConfig(stringifyConfig(config))
         setSmartKnobConfig(config)
@@ -238,6 +238,16 @@ export const App: React.FC<AppProps> = () => {
     }
 
     const [basePreset, setBasePreset] = useState('default')
+
+    useEffect(() => {
+        if (hasSmartknobInitialized.current) {
+            const presetNames = Object.keys(presets)
+            const currentIndex = presetNames.indexOf(basePreset) ?? 0
+            const name = presetNames[(currentIndex + 1) % presetNames.length]
+            applyPreset(name)
+        }
+        hasSmartknobInitialized.current = true
+    }, [smartKnobState.pressNonce])
 
     return (
         <>
@@ -264,7 +274,7 @@ export const App: React.FC<AppProps> = () => {
                                     <InputLabel id="preset-label">Preset</InputLabel>
                                     <Select
                                         value={basePreset}
-                                        onChange={applyPreset}
+                                        onChange={(e) => applyPreset(e.target.value)}
                                         labelId="preset-label"
                                         id="preset"
                                     >
