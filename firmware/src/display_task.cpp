@@ -5,6 +5,8 @@
 
 #include "font/roboto_light_60.h"
 
+#define SWAP(x, y) do { typeof(x) SWAP = x; x = y; y = SWAP; } while (0)
+
 static const uint8_t LEDC_CHANNEL_LCD_BACKLIGHT = 0;
 
 DisplayTask::DisplayTask(const uint8_t task_core) : Task{"Display", 2048, 1, task_core} {
@@ -101,7 +103,7 @@ void DisplayTask::run() {
           }
         }
 
-        float left_bound = PI / 2;
+        float left_bound = PI / 2 - max(0.0f, state.config.position_offset_radians);
         float right_bound = 0;
         if (num_positions > 0) {
           if (state.config.position_offset_radians < 0.0) {
@@ -111,9 +113,8 @@ void DisplayTask::run() {
             right_bound = PI / 2 - range_radians / 2;
           } else {
             // Otherwise, the endpoints are placed based on the offset origin specified in position_offset_radians.
-            float origin = PI / 2 - state.config.position_offset_radians;
-            left_bound = origin - state.config.min_position * state.config.position_width_radians;
-            right_bound = origin - state.config.max_position * state.config.position_width_radians;
+            left_bound = left_bound - state.config.min_position * state.config.position_width_radians;
+            right_bound = left_bound - state.config.max_position * state.config.position_width_radians;
           }
         }
         float raw_angle = left_bound - (state.current_position - state.config.min_position) * state.config.position_width_radians;
@@ -124,40 +125,51 @@ void DisplayTask::run() {
         if (!sk_demo_mode) {
           // Draws the meter on the background
           const float background_brightness = 0.75;
-
           uint8_t r = float(0xff & (state.config.base_color >> 16)) * background_brightness;
           uint8_t g = float(0xff & (state.config.base_color >> 8)) * background_brightness;
           uint8_t b = float(0xff & (state.config.base_color >> 0)) * background_brightness;
           uint16_t meterColor = spr_.color565(r, g, b);
           
           bool has_range = num_positions > 1;
+          int32_t meter_center = has_range
+            ? CLAMP(state.config.meter_center, state.config.min_position, state.config.max_position)
+            : (meter_center < 1e8 ? 0 : state.config.meter_center);
 
-          float t = float(state.current_position - state.config.min_position) / (state.config.max_position - state.config.min_position);
+          // Normalized value between [0, 1] of the meter origin and current position
+          float t0 = lerp(meter_center, state.config.min_position, state.config.max_position, 0, 1);
+          float t = lerp(state.current_position, state.config.min_position, state.config.max_position, 0, 1);
 
           if (has_range) {
             if (state.config.meter_type == PB_MeterType_VERTICAL) {
-              spr_.fillRect(0, TFT_HEIGHT * (1 - t), TFT_WIDTH, TFT_HEIGHT * t, meterColor);
+              if (t < t0) SWAP(t, t0);
+              spr_.fillRect(0, TFT_HEIGHT * (1 - t), TFT_WIDTH, TFT_HEIGHT * (t - t0), meterColor);
             } else if (state.config.meter_type == PB_MeterType_HORIZONTAL) {
-              spr_.fillRect(0, 0, TFT_WIDTH * t, TFT_HEIGHT, meterColor);
+              if (t < t0) SWAP(t, t0);
+              spr_.fillRect(TFT_WIDTH * t0, 0, TFT_WIDTH * (t - t0), TFT_HEIGHT, meterColor);
             } else if (state.config.meter_type == PB_MeterType_CIRCULAR) {
+              if (t < t0) SWAP(t, t0);
               int32_t cx = TFT_WIDTH / 2;
               int32_t cy = TFT_HEIGHT / 2;
               spr_.fillCircle(cx, cy, RADIUS * t, meterColor);
+              if (t0 > 0) spr_.fillCircle(cx, cy, RADIUS * t0, TFT_BLACK);
             }
           }
 
+          // Draws a radial meter whether the position is bounded or not
           if (state.config.meter_type == PB_MeterType_RADIAL) {
-            float origin_angle = has_range ? left_bound : PI / 2;
+            float t0_angle = has_range
+              ? lerp(t0, 0, 1, left_bound, right_bound)
+              : HALF_PI - max(0.0f, state.config.position_offset_radians) - meter_center * state.config.position_width_radians;
+            float t_angle = raw_angle;
 
-            while (abs(raw_angle - origin_angle) > PI * 2) {
-              if (origin_angle < raw_angle) {
-                origin_angle += 2 * PI;
-              } else {
-                origin_angle -= 2 * PI;
-              }
+            if (t_angle < t0_angle) SWAP(t0_angle, t_angle);
+
+            // If the meter angle is greather than 1 revolution, clamp it while keeping the same relative angle
+            if (t_angle - t0_angle > TWO_PI + 1e-6) {
+              t0_angle += floorf((t_angle - t0_angle) / (TWO_PI)) * TWO_PI;
             }
 
-            fillFan(spr_, TFT_WIDTH / 2, TFT_HEIGHT / 2, RADIUS * 2, origin_angle, raw_angle, radians(30), meterColor);
+            fillFan(spr_, TFT_WIDTH / 2, TFT_HEIGHT / 2, RADIUS * 2, t0_angle, t_angle, radians(30), meterColor);
           }
 
           // Draws a position text
