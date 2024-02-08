@@ -212,7 +212,7 @@ export const App: React.FC<AppProps> = () => {
                             console.log('LOG from smartknob', message.log?.msg)
                         }
                     },
-                    {baudRate: 1000000},
+                    {baudRate: 250000},
                 )
                 setSmartKnob(smartKnob)
                 const loop = smartKnob.openAndLoop()
