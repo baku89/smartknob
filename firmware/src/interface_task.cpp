@@ -61,7 +61,7 @@ static PB_SmartKnobConfig configs[] = {
         0,
         {},
         0,
-        0x00aaff,
+        0xff0000,
         -1,
         "",
         PB_MeterType_RADIAL,
