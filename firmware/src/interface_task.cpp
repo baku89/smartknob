@@ -236,7 +236,7 @@ static PB_SmartKnobConfig configs[] = {
         7 * PI / 180,
         2.5,
         1,
-        0.7,
+        1,
         "Magnetic detents",
         4,
         {2, 10, 21, 22},
